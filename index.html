@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Fantasy Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      background: #0f172a;
+      color: white;
+    }
+    .player {
+      background: #1e293b;
+      margin: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .selected {
+      background: green;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+<h2>Select Your Team (Max 5)</h2>
+
+<div id="players"></div>
+
+<button onclick="startGame()">Start Match</button>
+
+<h2 id="result"></h2>
+
+<script>
+let players = [
+  "Virat", "Rohit", "Dhoni", "Hardik", "Gill",
+  "Bumrah", "Shami", "Rahul", "Pant", "Jadeja"
+];
+
+let selected = [];
+
+let container = document.getElementById("players");
+
+players.forEach(name => {
+  let div = document.createElement("div");
+  div.innerText = name;
+  div.className = "player";
+
+  div.onclick = () => {
+    if (selected.includes(name)) {
+      selected = selected.filter(p => p !== name);
+      div.classList.remove("selected");
+    } else {
+      if (selected.length < 5) {
+        selected.push(name);
+        div.classList.add("selected");
+      } else {
+        alert("Max 5 players!");
+      }
+    }
+  };
+
+  container.appendChild(div);
+});
+
+function startGame() {
+  if (selected.length < 5) {
+    alert("Select 5 players!");
+    return;
+  }
+
+  let score = Math.floor(Math.random() * 100);
+
+  document.getElementById("result").innerText =
+    "Your Team Score: " + score;
+}
+</script>
+
+</body>
+</html>
