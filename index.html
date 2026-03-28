@@ -1,51 +1,82 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Fantasy Game</title>
+  <title>Fantasy Game + Payment</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
   <style>
     body {
       font-family: Arial;
-      text-align: center;
       background: #0f172a;
       color: white;
+      text-align: center;
     }
-    .player {
+
+    h1 { color: gold; }
+
+    .box {
       background: #1e293b;
+      padding: 15px;
       margin: 10px;
-      padding: 10px;
       border-radius: 10px;
-      cursor: pointer;
     }
-    .selected {
-      background: green;
-    }
+
     button {
       padding: 10px 20px;
-      font-size: 18px;
-      margin-top: 20px;
+      margin: 10px;
+      border-radius: 10px;
+      border: none;
+      background: orange;
+    }
+
+    .player {
+      background: #334155;
+      margin: 5px;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .selected {
+      background: green;
     }
   </style>
 </head>
 
 <body>
 
-<h2>Select Your Team (Max 5)</h2>
+<h1>🏏 Fantasy Game Pro</h1>
 
+<h3 id="coins">Coins: 100</h3>
+
+<div class="box">
+  <h3>💳 Add Coins</h3>
+  <button onclick="addCoins(50)">₹10 → 50 Coins</button>
+  <button onclick="addCoins(100)">₹20 → 100 Coins</button>
+</div>
+
+<h2>Select Team (Max 5)</h2>
 <div id="players"></div>
 
-<button onclick="startGame()">Start Match</button>
+<button onclick="play()">Play Match</button>
 
 <h2 id="result"></h2>
 
 <script>
-let players = [
-  "Virat", "Rohit", "Dhoni", "Hardik", "Gill",
-  "Bumrah", "Shami", "Rahul", "Pant", "Jadeja"
-];
+let coins = localStorage.getItem("coins") || 100;
+
+document.getElementById("coins").innerText = "Coins: " + coins;
+
+function addCoins(amount){
+  alert("Demo Payment Successful!");
+  coins = parseInt(coins) + amount;
+  localStorage.setItem("coins", coins);
+  document.getElementById("coins").innerText = "Coins: " + coins;
+}
+
+let players = ["Virat","Rohit","Dhoni","Hardik","Gill","Bumrah","Shami","Rahul","Pant","Jadeja"];
 
 let selected = [];
-
 let container = document.getElementById("players");
 
 players.forEach(name => {
@@ -54,11 +85,11 @@ players.forEach(name => {
   div.className = "player";
 
   div.onclick = () => {
-    if (selected.includes(name)) {
+    if(selected.includes(name)){
       selected = selected.filter(p => p !== name);
       div.classList.remove("selected");
     } else {
-      if (selected.length < 5) {
+      if(selected.length < 5){
         selected.push(name);
         div.classList.add("selected");
       } else {
@@ -70,16 +101,33 @@ players.forEach(name => {
   container.appendChild(div);
 });
 
-function startGame() {
-  if (selected.length < 5) {
+function play(){
+  if(selected.length < 5){
     alert("Select 5 players!");
     return;
   }
 
-  let score = Math.floor(Math.random() * 100);
+  if(coins < 10){
+    alert("Not enough coins!");
+    return;
+  }
 
-  document.getElementById("result").innerText =
-    "Your Team Score: " + score;
+  coins -= 10;
+
+  let score = Math.floor(Math.random()*100);
+
+  if(score > 50){
+    coins += 20;
+    document.getElementById("result").innerText = "🎉 You Won! Score: " + score;
+  } else {
+    document.getElementById("result").innerText = "😢 You Lost! Score: " + score;
+  }
+
+  localStorage.setItem("coins", coins);
+  document.getElementById("coins").innerText = "Coins: " + coins;
+
+  selected = [];
+  document.querySelectorAll(".player").forEach(p => p.classList.remove("selected"));
 }
 </script>
 
